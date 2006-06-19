@@ -1,5 +1,5 @@
 package Boost::Graph;
-our $VERSION = '1.1';
+our $VERSION = '1.2';
 #####################################################################################
 # Graph.pm
 # David Burdick, 11/08/2004
@@ -21,29 +21,6 @@ use Boost::Graph::Undirected;
 # _nodecount - the number of nodes in the network 
 # _edgecount - the number of edges in the network 
 # _node_neighbors - hash on node id, stores a hash whose keys are node ids of its neighbors
-#
-#______________________________________________________________________________________________________________
-### Methods
-#
-# Constructors: 
-#    Network(directed=>$d, net_name=>$nn, net_id=>$ni) - create an empty instance of this Network object
-#
-#  add_edge(node1=>$node1, node2=>$node2, weight=>$weight, edge=>$edge) - 
-#              adds the edge between the nodes (and the nodes themselves) to the network. 
-#              order of the nodes does not matter (with undirected edges)
-#              returns 1 if edge is new, 0 if edge exists already. default weight is 1.0
-#              If edge object is supplied, that is stored as well.
-# add_node($node) - adds the node to the node-unique network (only needed for disjoint nodes) 
-#                    returns 1 if node is new, 0 if node exists already
-# get_edges() - returns a reference to a list of edges that are 3 part 
-#                lists: [node1, node2, edge_object]
-# get_nodes() - returns a reference to a list of all the nodes
-# has_edge($node1, $node2) - returns 1 if the given edge is in the graph
-# has_node($node) - returns 1 if the passed node is in the network (checks for identical object makeup)
-# has_node($node,$id_name) - returns 1 if the passed node is in the network (checks for the id in nodeslist [linear search])
-# nodecount() - returns the number of nodes in the graph
-# edgecount() - returns the number of edges in the graph
-# neighbors($node) - returns the nodes that are neighbors of this node
 #
 #______________________________________________________________________________________________________________
 ### ALGORITHMS
@@ -80,18 +57,29 @@ sub new {
 #______________________________________________________________________________________________________________
 sub add_edge {
   my ($self, %args) = @_;
-  return unless $args{node1} && $args{node2};
+  my ($node1, $node2);
+  # check for simple edge add
+  if(@_ == 3) {
+    $node1=$_[1];
+    $node2=$_[2];
+  } else {
+    return unless $args{node1} && $args{node2};
+    $node1=$args{node1};
+    $node2=$args{node2};
+  }
+  
+
   my $weight = $args{weight};
   my $edge_obj = $args{edge};
   $weight or $weight=1.0; 
   $edge_obj or $edge_obj=1;
 
   # add nodes/get node_id
-  my $node1_id = $self->_get_node_id($args{node1});
-  my $node2_id = $self->_get_node_id($args{node2});
+  my $node1_id = $self->_get_node_id($node1);
+  my $node2_id = $self->_get_node_id($node2);
   return undef if $node1_id==0 || $node2_id==0; # problem!
   # check for duplicate edge 
-  return 0 if $self->has_edge($args{node1},$args{node2});
+  return 0 if $self->has_edge($node1,$node2);
 
   # add neighbors
   $self->{_node_neighbors}->{$node1_id}->{$node2_id} = 1;
@@ -169,16 +157,6 @@ sub has_node {
   return undef;
 }
 #______________________________________________________________________________________________________________
-sub nodecount {
-  my ($self) = @_;
-  return $self->{_nodecount};
-}
-#______________________________________________________________________________________________________________
-sub edgecount {
-  my ($self) = @_;
-  return $self->{_edgecount};
-}
-#______________________________________________________________________________________________________________
 sub neighbors {
   my ($self,$root) = @_;
   my $ids = $self->_neighbors($root);
@@ -191,7 +169,7 @@ sub neighbors {
 #______________________________________________________________________________________________________________
 sub children_of_directed {
   my ($self,$source) = @_;
-  return unless $self->{_directed}; # only for directed graphs!
+  die "children_of_directed(...) only for directed graphs." unless $self->{_directed}; 
   return [] unless $self->has_node($source);
   my $nid = $self->_get_node_id($source);
   # retrieve ids of children and return objects
@@ -208,7 +186,7 @@ sub children_of_directed {
 #______________________________________________________________________________________________________________
 sub parents_of_directed {
   my ($self,$source) = @_;
-  return unless $self->{_directed}; # only for directed graphs!
+  die "parents_of_directed(...) only for directed graphs." unless $self->{_directed}; 
   return [] unless $self->has_node($source);
   my $nid = $self->_get_node_id($source);
   # retrieve ids of parents and return objects
@@ -221,6 +199,35 @@ sub parents_of_directed {
     return \@node_objs;
   } 
   return [];
+}
+#______________________________________________________________________________________________________________
+sub nodecount {
+  my ($self) = @_;
+  return $self->{_nodecount};
+}
+#______________________________________________________________________________________________________________
+sub edgecount {
+  my ($self) = @_;
+  return $self->{_edgecount};
+}
+#______________________________________________________________________________________________________________
+sub add_path {
+  my ($self,@path) = @_;
+  for(my $i=0; $i<@path; $i++) {
+    last if ($i+1)>=@path;
+    $self->add_edge(node1=>$path[$i],node2=>$path[$i+1]);
+  }
+  return 1;
+}
+#______________________________________________________________________________________________________________
+sub has_path {
+  my ($self,@path) = @_;
+  for(my $i=0; $i<@path; $i++) {
+    last if ($i+1)>=@path;
+    my $has = $self->has_edge($path[$i],$path[$i+1]);
+    return 0 if !$has;
+  }
+  return 1;
 }
 #______________________________________________________________________________________________________________
 ### Private methods
@@ -348,6 +355,8 @@ sub depth_first_search {
   return $self->_get_node_list(\@node_order);
 }
 #______________________________________________________________________________________________________________
+### Shortest Paths Algorithms ###
+#______________________________________________________________________________________________________________
 # Dijkstra's Shortest Paths
 # returns hashref: {path|weight}. path is a listref, weight is a scalar
 sub dijkstra_shortest_path {
@@ -378,13 +387,49 @@ sub all_pairs_shortest_paths_johnson {
   return $ret;
 }
 #______________________________________________________________________________________________________________
+# Floyd-Warshall All Pairs Shortest Paths
+# returns path weight.
+sub all_pairs_shortest_paths_floyd_warshall {
+  my ($self,$start_node,$end_node) = @_;
+  return undef unless $start_node && $self->has_node($start_node) && $end_node && $self->has_node($end_node);
+  
+  my $ret;
+  my $start_id = $self->_get_node_id($start_node);
+  my $end_id = $self->_get_node_id($end_node);
+  $ret = $self->{_bgi}->allPairsShortestPathsFloydWarshall($start_id,$end_id);
+
+  return $ret;
+}
+#______________________________________________________________________________________________________________
+### Minimum Spanning Tree Algorithms ###
+#______________________________________________________________________________________________________________
+### Connected Components Algorithms ###
+#______________________________________________________________________________________________________________
+# Connected Components
+sub connected_components {
+  my ($self) = @_;
+  die "connected_components(...) only for undirected graphs." if $self->{_directed}; 
+  
+  my @clusters; # list of listrefs that represent the connected clusters
+  my @components = $self->{_bgi}->connectedComponents();
+  for(my $node_id=0; $node_id<@components; $node_id++) {
+    my $cluster = $components[$node_id];
+    my $node_obj = $self->{_nodes_lookup}->{$node_id};
+    if (defined($node_obj)) {
+      push @{ $clusters[$cluster] }, $node_obj;
+    }
+  }
+  shift @clusters if !defined($clusters[0]); # remove empty 0 node (we use non-zero indexing for node ids)
+  return \@clusters;
+}
+#______________________________________________________________________________________________________________
+
 
 #<link rel="stylesheet" href="http://search.cpan.org/s/style.css" type="text/css">
 #<link rel="alternate" type="application/rss+xml" title="RSS 1.0" href="http://search.cpan.org/uploads.rdf">
 
 1;
 __END__
-
 
 =head1 NAME
 
@@ -394,7 +439,7 @@ Boost::Graph - Perl interface to the Boost-Graph C++ libraries.
 
   use Boost::Graph;
   # Create an empty instance of a Graph
-  my $graph = new Boost::Graph(directed=>0, net_name=>'Graph Name', net_id=>1000) 
+  my $graph = new Boost::Graph(directed=>0, net_name=>'Graph Name', net_id=>1000); 
 
   # add edges
   $graph->add_edge(node1=>'a', node2=>'b', weight=>1.1, edge=>'edge name');
@@ -441,14 +486,28 @@ To add edges and nodes to a graph, you must first instantiate the class using th
   my $graph = new Boost::Graph();
   my $graph = new Boost::Graph(directed=>0, net_name=>'Graph Name', net_id=>1000);
 
-=head3 add_edge()
+=head3 Accessors
+
+=head4 add_edge
 
 The method adds the given nodes and the edge between them to the graph. In and
 undirected graph, the order of the nodes does not matter. In a directed graph, node1
 is the source and node2 is the sink. The edge parameter can be used to store an object along
 with the pairing. The weight parameter can give a numeric value to the edge (default 1.0).
 
-  Input Parameters:
+There are two ways to use this method:
+
+  $graph->add_edge($node1,$node2);
+
+  -- or --  
+
+  $graph->add_edge(node1=>$node1, node2=>$node2, weight=>$weight, edge=>$edge);
+
+The first method simply adds the edge to the graph with the default weight of 1.0 and no edge object. In a directed
+graph, the first node is used as the source and the second as the sink. If you would like to specify an edge weight
+or include an object with the edge, use the named parameter version. 
+
+  Named Parameters version:
   - node1: the source node
   - node2: the sink node
   - weight: the weight value for the edge (a number) [optional]
@@ -457,61 +516,100 @@ with the pairing. The weight parameter can give a numeric value to the edge (def
   Returns:
   1 if the edge is new, 0 if edge exists already.
 
-  Usage: 
-  $graph->add_edge(node1=>$node1, node2=>$node2, weight=>$weight, edge=>$edge);
+=head4 add_node
 
-=head3 add_node($node)
+  $graph->add_node($node);
 
 Adds the node to the network (only needed for disjoint nodes). Returns 1 if node is new, 0 if node exists already.
 
-=head3 get_edges() 
+=head4 get_edges
+
+  $graph->get_edges(); 
 
 Returns a reference to a list of edges that are 3 part lists: [node1, node2, edge_object].
 
-=head3 get_nodes() 
+=head4 get_nodes
+
+  $graph->get_nodes();
 
 Returns a reference to a list of all the nodes.
 
-=head3 has_edge($node1,$node2)
+=head4 has_edge
+
+  $graph->has_edge($node1,$node2);
 
 Returns 1 if the given edge is in the graph.
 
-=head3 has_node($node)
+=head4 has_node
+
+  $graph->has_node($node);
 
 Returns 1 if the passed node is in the network (checks for identical object makeup).
 
-=head3 nodecount()
+=head4 neighbors
 
-Returns the number of nodes in the graph.
-
-=head3 edgecount()
-
-Returns the number of edges in the graph.
-
-=head3 neighbors($node)
+  $graph->neighbors($node);
 
 Returns the nodes that are neighbors of this node.
 
-=head3 children_of_directed($node)
+=head4 children_of_directed
+
+  $graph->children_of_directed($node);
 
 Returns a listref of the nodes that are children of the input node. For Directed graphs only.
 
-=head3 parents_of_directed($node)
+=head4 parents_of_directed
+
+  $graph->parents_of_directed($node);
 
 Returns a listref of the nodes that are parents of the input node. For Directed graphs only.
+
+=head4 nodecount
+
+  $graph->nodecount();
+
+Returns the number of nodes in the graph.
+
+=head4 edgecount
+
+  $graph->edgecount();
+
+Returns the number of edges in the graph.
+
+=head3 Paths and Cycles
+
+Paths and cycles are simple extensions of edges: paths are edges starting from where the previous edge ended, and cycles are paths returning back to the start vertex of the first edge.
+
+=head4 add_path
+
+  $graph->add_path($a, $b, $c, ..., $x, $y, $z)
+
+Add the edges $a-$b, $b-$c, ..., $x-$y, $y-$z to the graph. Returns the graph.
+
+=head4 has_path
+
+  $graph->has_path($a, $b, $c, ..., $x, $y, $z)
+
+Return true if the graph has all the edges $a-$b, $b-$c, ..., $x-$y, $y-$z, false otherwise.
 
 
 =head1 Graph Algorithms
 
-=head3 breadth_first_search($start_node)
+=head4 breadth_first_search
+
+  $graph->breadth_first_search($start_node);
 
 Receives the start node and returns a listref of nodes from a breadth first traversal of the graph.
 
-=head3 depth_first_search($start_node)
+=head4 depth_first_search
+
+  $graph->depth_first_search($start_node);
 
 Receives the start node and returns a listref of nodes from a depth first traversal of the graph.
 
-=head3 dijkstra_shortest_path($start_node,$end_node)
+=head4 dijkstra_shortest_path
+
+  $graph->dijkstra_shortest_path($start_node,$end_node);
 
 Dijkstra's Shortest Path algorithm finds the shortest weighted-path between the start and end nodes.
 
@@ -520,13 +618,37 @@ Returns a hashref with keys:
   - path: path is a listref of the nodes in the path
   - weight: weight is a scalar giving the total weight of the path
 
-=head3 all_pairs_shortest_paths_johnson($start_node,$end_node)
+=head4 all_pairs_shortest_paths_johnson
 
-The first time this method is called, the shortest path between each pair of nodes in the graph is computed. 
-The total weight of the path between the start and end node is returned. Unless the graph is altered, the original
-matrix does not need to be re-computed.
+  $graph->all_pairs_shortest_paths_johnson($start_node,$end_node);
 
-=head3 transitive_links($nodes) 
+Johnsons' All pairs shortest paths, computes the shortest path between all nodes. Good for sparce graphs. 
+
+The first time this method is called, the shortest path between each pair 
+of nodes in the graph is computed. The total weight of the path between the start and end node is returned. Unless 
+the graph is altered, the original matrix does not need to be re-computed.
+
+=head4 all_pairs_shortest_paths_floyd_warshall
+
+  $graph->all_pairs_shortest_paths_floyd_warshall($start_node,$end_node);
+
+Floyd-Warshall's All pairs shortest paths, computes the shortest path between all nodes. Good for dense graphs.
+
+The first time this method is called, the shortest path between each pair 
+of nodes in the graph is computed. The total weight of the path between the start and end node is returned. Unless 
+the graph is altered, the original matrix does not need to be re-computed.
+
+=head4 connected_components
+
+  $graph->connected_components();
+  
+For an undirected graph, returns the nodes of the connected components of the graph as a list of 
+anonymous arrays. The ordering of the anonymous arrays or the ordering of the nodes inside the 
+anonymous arrays (the components) is undefined.
+
+=head4 transitive_links
+
+  $graph->transitive_links($nodes); 
 
 Receives a listref of nodes and returns a listref of nodes that are (disjoint 
 from the input set) transitive connectors of the input set in the current network.
@@ -555,13 +677,6 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
 
 =cut
-
-
-
-
-
-
-
 
 
 

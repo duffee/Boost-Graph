@@ -1,14 +1,13 @@
-Changes
 Directed/Directed.pm
 Directed/Directed.xs
 Directed/Makefile.PL
 Directed/MANIFEST
 Directed/perlobject.map
 Directed/ppport.h
+Directed/t/1.t
 Directed/t/Directed.t
 Directed/test/test.pl
 Directed/typemap
-doc/graph.htm
 Graph.pm
 include/boost/algorithm/minmax.hpp
 include/boost/algorithm/minmax_element.hpp
@@ -3331,7 +3330,9 @@ include/boost/wave/util/unput_queue_iterator.hpp
 include/boost/wave/wave_config.hpp
 include/boost/wave/wave_version.hpp
 include/boost/weak_ptr.hpp
+include/BoostGraph_directed_i.h
 include/BoostGraph_i.h
+include/BoostGraph_undirected_i.h
 include/TwoDArray.h
 Makefile.PL
 MANIFEST
@@ -3343,6 +3344,7 @@ Undirected/Makefile.PL
 Undirected/MANIFEST
 Undirected/perlobject.map
 Undirected/ppport.h
+Undirected/t/1.t
 Undirected/t/Undirected.t
 Undirected/test/test.pl
 Undirected/typemap

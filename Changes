@@ -1,6 +1,0 @@
-Revision history for Perl extension Boost::Graph.
-
-1.00  Wed Dec 14 15:24:07 2005
-	- original version; created by h2xs 1.22 with options
-		-A -n Boost::Graph
-
