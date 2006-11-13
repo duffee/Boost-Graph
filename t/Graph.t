@@ -14,14 +14,14 @@ use Data::Dumper;
 #______________________________________________________________________________________________________
 # GENERAL TESTS
 my $graph = new Boost::Graph();
-my $node0 = new t::testNode(-id=>'0');
-my $node1 = new t::testNode(-id=>'1');
-my $node2 = new t::testNode(-id=>'2');
-my $node3 = new t::testNode(-id=>'3');
-my $node4 = new t::testNode(-id=>'4');
-my $node5 = new t::testNode(-id=>'5');
-my $node6 = new t::testNode(-id=>'6');
-my $node7 = new t::testNode(-id=>'7');
+my $node0 = new t::testNode(id=>'0');
+my $node1 = new t::testNode(id=>'1');
+my $node2 = new t::testNode(id=>'2');
+my $node3 = new t::testNode(id=>'3');
+my $node4 = new t::testNode(id=>'4');
+my $node5 = new t::testNode(id=>'5');
+my $node6 = new t::testNode(id=>'6');
+my $node7 = new t::testNode(id=>'7');
 #______________________________________________________________________________________________________
 # _get_node_id
 my $node0_id = $graph->_get_node_id($node0);

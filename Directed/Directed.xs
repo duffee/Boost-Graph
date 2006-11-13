@@ -4,8 +4,6 @@ extern "C" {
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
-#include <sys/vfs.h> 
-#include "ppport.h"
 #undef do_open
 #undef do_close
 #undef apply

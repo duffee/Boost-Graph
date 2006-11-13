@@ -35,6 +35,7 @@ public:
     std::vector<vertex_descriptor>* parents;
   };
 
+  int _changed; // -1 for no graph object, 0 for no change, 1 for change in graph
   BoostGraph_directed_i();
   virtual ~BoostGraph_directed_i();
   
