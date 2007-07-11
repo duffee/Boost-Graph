@@ -1,5 +1,5 @@
 package Boost::Graph;
-our $VERSION = '1.3';
+our $VERSION = '1.4';
 #####################################################################################
 # Graph.pm
 # David Burdick, 11/08/2004
@@ -87,7 +87,7 @@ sub add_edge {
   # add parents
   $self->{_node_parents}->{$node2_id}->{$node1_id} = 1;
   # store edge and edge_object
-  if($node1_id < $node2_id) {
+  if($node1_id < $node2_id || $self->{_directed}) {
       $self->{_edges}->{$node1_id}->{$node2_id} = $edge_obj;
   } else {
     $self->{_edges}->{$node2_id}->{$node1_id} = $edge_obj;    
@@ -107,6 +107,16 @@ sub add_node {
   } else {
     return 0;
   }
+}
+#______________________________________________________________________________________________________________
+sub get_edge {
+  my ($self,$source,$sink) = @_;
+  my @edges;
+  my $source_id = $self->_get_node_id($source);
+  my $sink_id = $self->_get_node_id($sink);
+  my $a = $self->{_nodes_lookup}->{$source_id};
+  my $b = $self->{_nodes_lookup}->{$sink_id};
+  return [$a, $b, $self->{_edges}->{$source_id}->{$sink_id}];
 }
 #______________________________________________________________________________________________________________
 sub get_edges {
@@ -134,10 +144,10 @@ sub has_edge {
     my $node1_id = $self->_get_node_id($node1);
     my $node2_id = $self->_get_node_id($node2);
     return undef if $node1_id==0 || $node2_id==0; # problem!
-    # check for duplicate edge being careful not to make empty hashes on the first id
+    # check for duplicate edge being careful not to make empty hashes on the first id. don't check reverse for directed graphs
     if ($self->{_edges}->{$node1_id}) {
       return 1 if $self->{_edges}->{$node1_id}->{$node2_id};
-    } elsif ($self->{_edges}->{$node2_id}) {
+    } elsif ($self->{_edges}->{$node2_id} && !$self->{_directed}) {
       return 1 if $self->{_edges}->{$node2_id}->{$node1_id};
     }
   }
