@@ -1,5 +1,11 @@
 package Boost::Graph;
-our $VERSION = '1.4';
+
+# Dev release version numbering ends in a _xxx suffix, and is evaled to a number.
+# See perldoc perlmodstyle for explanation.
+our $VERSION = '1.4_001';
+our $XS_VERSION = $VERSION;
+$VERSION = eval $VERSION;
+
 #####################################################################################
 # Graph.pm
 # David Burdick, 11/08/2004
