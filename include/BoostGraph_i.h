@@ -18,12 +18,12 @@
 #include <algorithm>
 #include "TwoDArray.h"
 #include <boost/config.hpp>
-#include <boost/property_map.hpp>
+#include <boost/property_map/property_map.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <boost/pending/indirect_cmp.hpp>
-#include <boost/pending/integer_range.hpp>
+#include <boost/range/irange.hpp>
 #include <boost/static_assert.hpp>
 
 #include <boost/graph/breadth_first_search.hpp>
