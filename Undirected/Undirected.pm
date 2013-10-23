@@ -27,7 +27,7 @@ $VERSION = eval $VERSION;
 
 
 require XSLoader;
-XSLoader::load('Boost::Graph::Undirected', $VERSION);
+XSLoader::load('Boost::Graph::Undirected', $XS_VERSION);
 
 # Preloaded methods go here.
 
