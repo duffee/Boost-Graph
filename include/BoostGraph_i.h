@@ -306,7 +306,9 @@ Path BoostGraph_i<G>::dijkstraShortestPath(int nodeIdStart, int nodeIdEnd) {
     _dijkstraPaths[nodeIdStart].parents = p;
   
     vertex_descriptor source = vertex(nodeIdStart, *this->boostGraph);  
-    dijkstra_shortest_paths(*this->boostGraph, source, predecessor_map(&(*p)[0]).distance_map(&(*d)[0]));
+    dijkstra_shortest_paths(*this->boostGraph, source,
+        predecessor_map(boost::make_iterator_property_map(p->begin(), get(boost::vertex_index, *this->boostGraph))).
+        distance_map(boost::make_iterator_property_map(d->begin(), get(boost::vertex_index, *this->boostGraph))));
   }
   
   // retrieve path and distance
