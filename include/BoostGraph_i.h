@@ -18,12 +18,12 @@
 #include <algorithm>
 #include "TwoDArray.h"
 #include <boost/config.hpp>
-#include <boost/property_map.hpp>
+#include <boost/property_map/property_map.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <boost/pending/indirect_cmp.hpp>
-#include <boost/pending/integer_range.hpp>
+#include <boost/range/irange.hpp>
 #include <boost/static_assert.hpp>
 
 #include <boost/graph/breadth_first_search.hpp>
@@ -306,7 +306,9 @@ Path BoostGraph_i<G>::dijkstraShortestPath(int nodeIdStart, int nodeIdEnd) {
     _dijkstraPaths[nodeIdStart].parents = p;
   
     vertex_descriptor source = vertex(nodeIdStart, *this->boostGraph);  
-    dijkstra_shortest_paths(*this->boostGraph, source, predecessor_map(&(*p)[0]).distance_map(&(*d)[0]));
+    dijkstra_shortest_paths(*this->boostGraph, source,
+        predecessor_map(boost::make_iterator_property_map(p->begin(), get(boost::vertex_index, *this->boostGraph))).
+        distance_map(boost::make_iterator_property_map(d->begin(), get(boost::vertex_index, *this->boostGraph))));
   }
   
   // retrieve path and distance
