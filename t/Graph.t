@@ -331,20 +331,36 @@ $dfs=undef;
 my $dfsl = $graph->depth_first_search_levels($node0);
 is($dfsl->[0]->{node}->{id},0,"Depth First Search Levels (0 root): 0");
 is($dfsl->[0]->{depth},0,"Depth First Search Levels (0 root) depth(0): 0");
-is($dfsl->[1]->{node}->{id},4,"Depth First Search Levels (0 root): 4");
-is($dfsl->[1]->{depth},1,"Depth First Search Levels (0 root) depth(4): 1");
-is($dfsl->[2]->{node}->{id},5,"Depth First Search Levels (0 root): 5");
-is($dfsl->[2]->{depth},2,"Depth First Search Levels (0 root) depth(5): 2");
-is($dfsl->[3]->{node}->{id},7,"Depth First Search Levels (0 root): 7");
-is($dfsl->[3]->{depth},3,"Depth First Search Levels (0 root) depth(7): 3");
-is($dfsl->[4]->{node}->{id},6,"Depth First Search Levels (0 root): 6");
-is($dfsl->[4]->{depth},2,"Depth First Search Levels (0 root) depth(6): 2");
-is($dfsl->[5]->{node}->{id},1,"Depth First Search Levels (0 root): 1");
-is($dfsl->[5]->{depth},1,"Depth First Search Levels (0 root) depth(1): 1");
-is($dfsl->[6]->{node}->{id},2,"Depth First Search Levels (0 root): 2");
-is($dfsl->[6]->{depth},2,"Depth First Search Levels (0 root) depth(2): 2");
-is($dfsl->[7]->{node}->{id},3,"Depth First Search Levels (0 root): 3");
-is($dfsl->[7]->{depth},2,"Depth First Search Levels (0 root) depth(3): 2");
+
+my %dfsl_flattened = map { $_->{node}->{id} => $_->{depth} } @{$dfsl};
+my %node_level = ( 0 => 0, 
+                    1 => 1, 4 => 1, 
+                    2 => 2, 3 => 2, 5 => 2, 6 => 2,
+                    7 => 3 
+                );
+is_deeply(\%dfsl_flattened, \%node_level, "The depth of each node should be the same regardless of order found");
+
+#### How to test the values of $dfsl when the order is random ####
+for (my $i = 1; $i <= 5; $i++) {
+    if (1 == $dfsl->[$i]->{node}->{id}) {
+        ok( (2 == $dfsl->[$i+1]->{node}->{id} && 3 == $dfsl->[$i+2]->{node}->{id})
+                ||
+            (3 == $dfsl->[$i+1]->{node}->{id} && 2 == $dfsl->[$i+2]->{node}->{id}),
+                "Node 1 should be followed by 2&3 or 3&2"
+        );
+    }
+    elsif (4 == $dfsl->[$i]->{node}->{id}) {
+        ok( (6 == $dfsl->[$i+1]->{node}->{id} && 5 == $dfsl->[$i+2]->{node}->{id})
+                ||
+            (5 == $dfsl->[$i+1]->{node}->{id} && 6 == $dfsl->[$i+3]->{node}->{id}),
+                "Node 4 should be followed by 6&5 or 5,7&6"
+        );
+    }
+    elsif (5 == $dfsl->[$i]->{node}->{id}) {
+        is($dfsl->[$i+1]->{node}->{id}, 7, "Node 5 is always followed immediately by 7");
+    }
+}
+
 #______________________________________________________________________________________________________
 # Dijkstras Shortest path
 $graph = new Boost::Graph(directed=>1);
