@@ -332,6 +332,9 @@ my $dfsl = $graph->depth_first_search_levels($node0);
 is($dfsl->[0]->{node}->{id},0,"Depth First Search Levels (0 root): 0");
 is($dfsl->[0]->{depth},0,"Depth First Search Levels (0 root) depth(0): 0");
 
+is(scalar @{$dfsl}, 8, 'Should be 8 nodes in this graph');
+
+#### make sure all the nodes are found at the correct levels ####
 my %dfsl_flattened = map { $_->{node}->{id} => $_->{depth} } @{$dfsl};
 my %node_level = ( 0 => 0, 
                     1 => 1, 4 => 1, 
