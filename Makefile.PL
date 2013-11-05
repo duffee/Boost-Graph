@@ -42,7 +42,7 @@ WriteMakefile(
     'INC'		=> '-I.',
 	# Un-comment this if you add C files to link with later:
     # 'OBJECT'		=> '$(O_FILES)', # link all the C files too
-    TEST_REQUIRES => { "Test::More" => "0.47" },
+    ($ExtUtils::MakeMaker::VERSION >= 6.64 ? ('TEST_REQUIRES' => { "Test::More" => "0.47" }, ) : ()),
     ($ExtUtils::MakeMaker::VERSION >= 6.3002 ? ('LICENSE'  => 'perl', ) : ()),
     #($ExtUtils::MakeMaker::VERSION >= 6.3002 ? ('LICENSE'  => 'open_source' ) : ()), # use this when including the Boost library
     depend => { '$(FIRST_MAKEFILE)' => '$(VERSION_FROM)' }, # prevents "object version does not match bootstrap parameter"
