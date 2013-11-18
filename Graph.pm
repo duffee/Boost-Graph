@@ -121,7 +121,7 @@ sub add_node {
 sub remove_node {
   my ($self, $node) = @_;
   if($self->has_node($node)) {
-    my $node_id = $self->{_nodes}->{$node} = $node_id;
+    my $node_id = $self->{_nodes}->{$node};
     return 0 unless $node_id > 0;
 
     $self->{_nodecount}--;

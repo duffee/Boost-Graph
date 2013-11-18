@@ -126,7 +126,7 @@ bool BoostGraph_i<G>::addNode(int nodeId) {
 template <typename G>
 bool BoostGraph_i<G>::removeNode(int nodeId) {
   if((*_nodes)[nodeId]!=nodeId) return true; // node does not exist
-  delete (*_nodes)[nodeId]; // hope delete works like the destructor above
+  (*_nodes)[nodeId]=NULL; // hope delete works like the destructor above
   _changed=1;
   return true;
 }

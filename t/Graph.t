@@ -405,8 +405,9 @@ $allp=undef;
 #______________________________________________________________________________________________________
 
 # test remove_node
+my $nodecount_before_remove = $graph->nodecount();
 ok($graph->remove_node($node6), 'Can we remove node 6');
 ok(! $graph->has_node($node6), "Shouldn't have the node we just removed");
-is($graph->nodecount(), 6, 'Six nodes remain after one is removed');
+is($graph->nodecount(), $nodecount_before_remove-1, 'Five nodes remain after one is removed from the previous graph');
 
 
