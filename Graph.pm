@@ -115,6 +115,26 @@ sub add_node {
   }
 }
 #______________________________________________________________________________________________________________
+#
+# TODO: remove the edges attached to this node (although boost doesn't do it like this)
+#       remove the node from the nearest neighbours
+sub remove_node {
+  my ($self, $node) = @_;
+  if($self->has_node($node)) {
+    my $node_id = $self->{_nodes}->{$node} = $node_id;
+    return 0 unless $node_id > 0;
+
+    $self->{_nodecount}--;
+    delete $self->{_nodes}->{$node};
+    delete $self->{_nodes_lookup}->{$node_id};
+
+    $self->{_bgi}->_removeNode($node_id); # C++
+    return 1;
+  } else {
+    return 0;
+  }
+}
+#______________________________________________________________________________________________________________
 sub get_edge {
   my ($self,$source,$sink) = @_;
   my @edges;
@@ -538,6 +558,14 @@ or include an object with the edge, use the named parameter version.
 
 Adds the node to the network (only needed for disjoint nodes). Returns 1 if node is new, 0 if node exists already.
 
+=head4 remove_node
+
+  $graph->remove_node($node);
+
+Removes the node from the network (only needed for disjoint nodes). Returns 1 if node exists, 0 if node does not exist.
+
+NEEDS WORK!!!
+
 =head4 get_edges
 
   $graph->get_edges(); 
@@ -638,7 +666,7 @@ Returns a hashref with keys:
 
   $graph->all_pairs_shortest_paths_johnson($start_node,$end_node);
 
-Johnsons' All pairs shortest paths, computes the shortest path between all nodes. Good for sparce graphs. 
+Johnsons' All pairs shortest paths, computes the shortest path between all nodes. Good for sparse graphs. 
 
 The first time this method is called, the shortest path between each pair 
 of nodes in the graph is computed. The total weight of the path between the start and end node is returned. Unless 

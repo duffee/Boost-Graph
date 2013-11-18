@@ -62,6 +62,7 @@ public:
 
   G* boostGraph;     
   virtual bool addNode(int nodeId);
+  virtual bool removeNode(int nodeId);
   virtual bool addEdge(int nodeIdSource, int nodeIdSink, double weightVal=1.0);
   virtual int nodeCount() const;
   virtual int edgeCount() const;
@@ -118,6 +119,14 @@ template <typename G>
 bool BoostGraph_i<G>::addNode(int nodeId) {
   if((*_nodes)[nodeId]==nodeId) return false; // node exists
   (*_nodes)[nodeId]=nodeId;
+  _changed=1;
+  return true;
+}
+//______________________________________________________________________________
+template <typename G>
+bool BoostGraph_i<G>::removeNode(int nodeId) {
+  if((*_nodes)[nodeId]!=nodeId) return true; // node does not exist
+  delete (*_nodes)[nodeId]; // hope delete works like the destructor above
   _changed=1;
   return true;
 }

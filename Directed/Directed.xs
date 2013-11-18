@@ -48,6 +48,12 @@ public:
 		return ret;
 	}
 
+	bool _removeNode(int nodeId) {
+		bool ret = BGi->removeNode(nodeId);
+		cout << "_removeNode(" << nodeId << ")\n";
+		return ret;
+	}
+
 	bool _addEdge(int nodeIdSource, int nodeIdSink, double weightVal) {
 		bool ret = BGi->addEdge(nodeIdSource, nodeIdSink, weightVal);
 //		cout << "_addEdge(" << nodeIdSource <<","<< nodeIdSink <<","<< weightVal << ")\n";
@@ -73,6 +79,9 @@ BoostGraph::DESTROY()
 
 bool 
 BoostGraph::_addNode(int nodeId)
+
+bool 
+BoostGraph::_removeNode(int nodeId)
 
 bool 
 BoostGraph::_addEdge(int nodeIdSource, int nodeIdSink, double weightVal)
