@@ -1,0 +1,61 @@
+{
+   "abstract" : "Perl interface to the Boost-Graph C++ libraries.",
+   "author" : [
+      "David Burdick <dburdick@systemsbiology.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "ExtUtils::MakeMaker version 7.64, CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "unknown"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Boost-Graph",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc",
+         "bundled",
+         "my"
+      ],
+      "package" : [
+         "DynaLoader",
+         "in",
+         "version"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Alien::Boost::Headers" : "0",
+            "ExtUtils::MakeMaker" : "6.52"
+         }
+      },
+      "runtime" : {
+         "requires" : {}
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/duffee/Boost-Graph/issues"
+      },
+      "homepage" : "https://metacpan.org/release/Boost-Graph",
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "https://github.com/duffee/Boost-Graph.git"
+      },
+      "x_IRC" : "irc://irc.perl.org/#native"
+   },
+   "version" : "1.4_001",
+   "x_serialization_backend" : "JSON::PP version 4.12"
+}
