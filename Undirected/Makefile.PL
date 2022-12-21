@@ -1,6 +1,7 @@
 use 5.008;
 use ExtUtils::MakeMaker;
-$CC = 'g++ -O';
+$CC = 'g++ -fpermissive -O';
+use Alien::Base::Wrapper qw( Alien::Boost::Headers );
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(
@@ -14,9 +15,11 @@ WriteMakefile(
     'DEFINE'		=> '', # e.g., '-DHAVE_SOMETHING'
     'CC'                => $CC,
     'LD'                => '$(CC)',
-    'INC'		=> '-I. -I../include -I../include/boost', # MODIFY THIS! Point it to your Boost installation
-	# Un-comment this if you add C files to link with later:
-    # 'OBJECT'		=> '$(O_FILES)', # link all the C files too
     'XSOPT'             => '-C++',
-    'TYPEMAPS'          => ['perlobject.map' ],
+    CONFIGURE_REQUIRES => {
+        'ExtUtils::MakeMaker'   => 6.52,
+        'Alien::Boost::Headers' => '0',
+    },
+    Alien::Base::Wrapper->mm_args,
+   'TYPEMAPS'          => ['perlobject.map' ],
 );

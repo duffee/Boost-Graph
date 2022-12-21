@@ -236,6 +236,8 @@ $allp = $graph->all_pairs_shortest_paths_floyd_warshall($node0,$node3);
 is($allp,2, "All Pairs Shortest Path Floyd-Warshall for 0->3: 2");
 $allp=undef;
 #______________________________________________________________________________________________________# connected components
+
+=pod
 $graph=undef;
 $graph = new Boost::Graph();
 $graph->add_edge($node0, $node1);
@@ -400,3 +402,4 @@ $allp=undef;
 
 
 
+=cut

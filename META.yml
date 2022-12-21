@@ -1,10 +1,35 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Boost-Graph
-version:      1.4
-version_from: Graph.pm
-installdirs:  site
-requires:
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+---
+abstract: 'Perl interface to the Boost-Graph C++ libraries.'
+author:
+  - 'David Burdick <dburdick@systemsbiology.org>'
+build_requires:
+  ExtUtils::MakeMaker: '0'
+configure_requires:
+  Alien::Boost::Headers: '0'
+  ExtUtils::MakeMaker: '6.52'
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 7.64, CPAN::Meta::Converter version 2.150010'
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Boost-Graph
+no_index:
+  directory:
+    - t
+    - inc
+    - bundled
+    - my
+  package:
+    - DynaLoader
+    - in
+    - version
+requires: {}
+resources:
+  IRC: irc://irc.perl.org/#native
+  bugtracker: https://github.com/duffee/Boost-Graph/issues
+  homepage: https://metacpan.org/release/Boost-Graph
+  license: http://dev.perl.org/licenses/
+  repository: https://github.com/duffee/Boost-Graph.git
+version: 1.4_001
+x_serialization_backend: 'CPAN::Meta::YAML version 0.018'
