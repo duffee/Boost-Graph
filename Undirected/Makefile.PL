@@ -14,7 +14,9 @@ WriteMakefile(
     'DEFINE'		=> '', # e.g., '-DHAVE_SOMETHING'
     'CC'                => $CC,
     'LD'                => '$(CC)',
-    'INC'		=> '-I. -I../include -I../include/boost', # MODIFY THIS! Point it to your Boost installation
+    #'INC'		=> '-I. -I../include -I../include/boost', # MODIFY THIS! Point it to your Boost installation
+    #'INC'		=> '-I. -I../include -I/home/boyd/perl/Boost/boost_1_33_1',
+    'INC'		=> "-I. -I../include -I$ENV{BOOST}",
 	# Un-comment this if you add C files to link with later:
     # 'OBJECT'		=> '$(O_FILES)', # link all the C files too
     'XSOPT'             => '-C++',
