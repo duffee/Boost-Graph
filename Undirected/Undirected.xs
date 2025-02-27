@@ -18,7 +18,8 @@ extern "C" {
 #include <algorithm>
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/property_map/property_map.hpp>
+//#include <boost/property_map/property_map.hpp> // 1_66_0
+#include <boost/property_map.hpp>  // 1_33_1
 #include <string>
 #include "BoostGraph_i.h"
 #include "BoostGraph_undirected_i.h"
