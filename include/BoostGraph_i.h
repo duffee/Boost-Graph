@@ -123,7 +123,9 @@ bool BoostGraph_i<G>::addNode(int nodeId) {
 }
 //______________________________________________________________________________
 template <typename G>
-bool BoostGraph_i<G>::addEdge(int nodeIdSource, int nodeIdSink, double weightVal=1.0) {
+bool BoostGraph_i<G>::addEdge(int nodeIdSource, int nodeIdSink, double weightVal) {
+  if (! weightVal) weightVal = 1.0; // a default value, this also means no weights of 0 possible
+                                    // this keeps gcc happy with the redefinition error
   Pair* twoNodes = new Pair(nodeIdSource,nodeIdSink);
   GEdge* thisEdge = new GEdge(twoNodes,weightVal);
   addNode(nodeIdSource);
