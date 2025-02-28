@@ -3,7 +3,11 @@
 recommends 'Data::Dumper::Concise';
 recommends 'Feature::Compat::Try';
 
-on test => sub {
+on 'configure' => sub {
+    requires 'Alien::Boost::Headers';
+};
+
+on 'test' => sub {
     requires 'Test2::V0';
     #requires 'Test2::Tools::Compare' => '1.302196'; # number_gt available Apr 2023
 };
