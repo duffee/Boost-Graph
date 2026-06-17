@@ -62,7 +62,7 @@ public:
 
   G* boostGraph;     
   virtual bool addNode(int nodeId);
-  virtual bool addEdge(int nodeIdSource, int nodeIdSink, double weightVal);
+  virtual bool addEdge(int nodeIdSource, int nodeIdSink, double weightVal=1.0);
   virtual int nodeCount() const;
   virtual int edgeCount() const;
   // ALGORITHMS
@@ -123,7 +123,7 @@ bool BoostGraph_i<G>::addNode(int nodeId) {
 }
 //______________________________________________________________________________
 template <typename G>
-bool BoostGraph_i<G>::addEdge(int nodeIdSource, int nodeIdSink, double weightVal=1.0) {
+bool BoostGraph_i<G>::addEdge(int nodeIdSource, int nodeIdSink, double weightVal) {
   Pair* twoNodes = new Pair(nodeIdSource,nodeIdSink);
   GEdge* thisEdge = new GEdge(twoNodes,weightVal);
   addNode(nodeIdSource);
