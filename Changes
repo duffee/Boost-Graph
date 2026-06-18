@@ -1,5 +1,10 @@
 Change log for Perl extension Boost::Graph
 
+2026-06-18 1.5
+  - updated for Boost 1.81+
+  - Big thanks to Thibault Duponchelle for
+    Alien::Boost::Headers code and infrastructure
+
 2013-10-21 1.4_001
   - DEVELOPER'S RELEASE
   - Added Changes, and MANIFEST.SKIP
