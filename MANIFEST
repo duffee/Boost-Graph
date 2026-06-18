@@ -1,3 +1,5 @@
+Changes
+cpanfile
 Directed/Directed.pm
 Directed/Directed.xs
 Directed/Makefile.PL
@@ -14,7 +16,9 @@ include/BoostGraph_i.h
 include/BoostGraph_undirected_i.h
 include/TwoDArray.h
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
+META.json
+META.yml			Module meta-data (added by MakeMaker)
 ppport.h
 README
 t/Graph.t
@@ -29,4 +33,3 @@ Undirected/test/test.pl
 Undirected/typemap
 Undirected/Undirected.pm
 Undirected/Undirected.xs
-META.yml                                 Module meta-data (added by MakeMaker)
