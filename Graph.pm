@@ -2,7 +2,7 @@ package Boost::Graph;
 
 # Dev release version numbering ends in a _xxx suffix, and is evaled to a number.
 # See perldoc perlmodstyle for explanation.
-our $VERSION = '1.4_091';
+our $VERSION = '1.4_092';
 our $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 
@@ -473,16 +473,10 @@ many efficient and peer reviewed algorithms.
 
 =head1 INSTALLATION
 
-Installation works as with any other CPAN distribution. This package comes bundled with the Boost Graph 
-C++ Library, version 1.33. This allows the package to install without any extra installation steps. 
-However, if you would like to use a different version of Boost, you can edit the following line in 
-Directed/Makefile.PL and Undirected/Makefile.PL to point to your installation:
-   
-  'INC' => '-I. -I../include -I/usr/local/include/boost-1_33/', 
+Installation works as with any other CPAN distribution.
+If you would like to use a different version of Boost, set the BOOST environment variable
 
-note, the Boost Library location on the example system is located in /usr/local/include/boost-1_33/
-
-See http://www.boost.org/libs/graph/doc/
+See the INSTALL.md file and http://www.boost.org/libs/graph/doc/
 
 =head1 Methods
 

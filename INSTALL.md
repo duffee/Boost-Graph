@@ -13,7 +13,7 @@ If you prefer to install the headers using your OS package manager
 ```
 apt-get install libboost-graph-dev
 ```
-or libboost-dev, libboost-all-dev
+or maybe libboost-dev or libboost-all-dev
 
 ### Fedora
 
@@ -29,12 +29,18 @@ brew install boost
 
 ## Windows
 
-Experimental: download either the source or the binaries from https://www.boost.org/releases
+Alien::Boost::Headers does not know how to proceed on Windows,
+so you will have to download either the source or the binaries
+from https://www.boost.org/releases
 and then set the BOOST environment variable to the directory.
 ```Powershell
 [Environment]::SetEnvironmentVariable("BOOST", "C:\boost_1_91_0", "User")
 ```
-I haven't got a windows machine to test this out, so if please let me know how you get on with this.
+I haven't got a windows machine to test this out,
+so please let me know how you get on with this.
+If you are willing and able to help improve the [alienfile](https://alienfile.org/),
+we can have a go.
+Read [Alien Author Manual](https://alienfile.org/pod/Alien/Build/Manual/AlienAuthor.html)
 
 ## Source
 
